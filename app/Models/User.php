@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Http;
 
 class User extends Authenticatable
 {
@@ -21,6 +22,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'tahvel_cookie',
     ];
 
     /**
@@ -44,5 +46,31 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function tahvelUser(): mixed
+    {
+        $response = Http::withHeaders([
+            'cookie' => $this->tahvel_cookie,
+        ])->get('https://tahvel.edu.ee/hois_back/user');
+
+       if(!$response->ok() || empty($response->body())) {
+            return null;
+       }
+
+       return $response->json();
+    }
+
+    public function tahvelAbsence(): mixed
+    {
+        $response = Http::withHeaders([
+            'cookie' => $this->tahvel_cookie,
+        ])->get('https://tahvel.edu.ee/hois_back/students/132755/myAbsences/sum?absenceTypeH=true&absenceTypeP=true&absenceTypePR=true&absenceTypeV=true&lang=ET&page=0&size=50&sort=entry_date,desc&studyYear=668');
+
+       if(!$response->ok() || empty($response->body())) {
+            return null;
+       }
+
+       return $response->json();
     }
 }

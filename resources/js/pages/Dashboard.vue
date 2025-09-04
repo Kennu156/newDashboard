@@ -1,9 +1,13 @@
 <script setup lang="ts">
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Textarea } from '@/components/ui/textarea';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
-import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/vue3';
-import PlaceholderPattern from '../components/PlaceholderPattern.vue';
+import { UserData, type BreadcrumbItem } from '@/types';
+import { Head, router } from '@inertiajs/vue3';
+import { ref } from 'vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -11,6 +15,22 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: dashboard().url,
     },
 ];
+
+defineProps<{
+    name?: string;
+    userData: UserData | null;
+    absenceData: any;
+}>();
+
+const tahvelCookie = ref<string>();
+
+// https://tahvel.edu.ee/hois_back/user
+
+const saveTahvelCookie = () => {
+    router.put('/save-tahvel-cookie', {
+        tahvel_cookie: tahvelCookie.value,
+    });
+};
 </script>
 
 <template>
@@ -18,20 +38,31 @@ const breadcrumbs: BreadcrumbItem[] = [
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-            <div class="grid auto-rows-min gap-4 md:grid-cols-3">
-                <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                    <PlaceholderPattern />
-                </div>
-                <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                    <PlaceholderPattern />
-                </div>
-                <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                    <PlaceholderPattern />
-                </div>
+            <div>
+                <Label>Tahvel auth tahvel-cookie</Label>
+                <Textarea class="" v-model="tahvelCookie"></Textarea>
+                <p class="text-xs text-destructive" v-show="$page.props.errors.tahvel_cookie">
+                    {{ $page.props.errors.tahvel_cookie }}
+                </p>
             </div>
-            <div class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border">
-                <PlaceholderPattern />
-            </div>
+            <div><Button @click="saveTahvelCookie">Save</Button></div>
+            <Table>
+                <TableCaption>A list of absence data.</TableCaption>
+                <TableHeader>
+                    <TableRow>
+                        <TableHead class="w-[100px]">Field</TableHead>
+                        <TableHead>Value</TableHead>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    <TableRow v-for="(value, key) in absenceData" :key="key">
+                        <TableCell class="font-medium">{{ key }}</TableCell>
+                        <TableCell>{{ value }}</TableCell>
+                    </TableRow>
+                </TableBody>
+            </Table>
+
+            <pre>{{ userData }}</pre>
         </div>
     </AppLayout>
 </template>
