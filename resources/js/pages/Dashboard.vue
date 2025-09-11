@@ -20,7 +20,23 @@ defineProps<{
     name?: string;
     userData: UserData | null;
     absenceData: any;
+    timetableData: TimetableEntry[] | null;
+    journalData: JournalData[] | null;
 }>();
+
+interface TimetableEntry {
+    day: string;
+    period: number;
+    subject: string;
+    room?: string;
+}
+
+interface JournalData {
+    subject: string;
+    grade: number;
+    teacher: string;
+    created_at: string; // ISO date
+}
 
 const tahvelCookie = ref<string>();
 
@@ -46,12 +62,13 @@ const saveTahvelCookie = () => {
                 </p>
             </div>
             <div><Button @click="saveTahvelCookie">Save</Button></div>
+
             <Table>
                 <TableCaption>A list of absence data.</TableCaption>
                 <TableHeader>
                     <TableRow>
-                        <TableHead class="w-[100px]">Field</TableHead>
-                        <TableHead>Value</TableHead>
+                        <TableHead class="w-[100px]"></TableHead>
+                        <TableHead>Kogus</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -62,7 +79,65 @@ const saveTahvelCookie = () => {
                 </TableBody>
             </Table>
 
-            <pre>{{ userData }}</pre>
+            <Table>
+                <TableCaption>User data.</TableCaption>
+                <TableHeader>
+                    <TableRow>
+                        <TableHead class="w-[100px]"></TableHead>
+                        <TableHead>Väärtused</TableHead>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    <TableRow v-for="(value, key) in userData" :key="key">
+                        <TableCell class="font-medium">{{ key }}</TableCell>
+                        <TableCell>{{ value }}</TableCell>
+                    </TableRow>
+                </TableBody>
+            </Table>
+
+            <Table>
+  <TableCaption>Journal Data</TableCaption>
+  <TableHeader>
+    <TableRow>
+      <TableHead class="w-[50px]">#</TableHead>
+      <TableHead>Subject</TableHead>
+      <TableHead>Teacher(s)</TableHead>
+      <TableHead>Absences</TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    <TableRow v-for="(entry, index) in journalData" :key="entry.id ?? index">
+      <TableCell class="font-medium">{{ index + 1 }}</TableCell>
+      <TableCell>{{ entry.nameEt }}</TableCell>
+      <TableCell>
+        <span v-if="Array.isArray(entry.teachers)">
+          {{ entry.teachers.join(', ') }}
+        </span>
+        <span v-else>
+          {{ entry.teachers ?? '—' }}
+        </span>
+      </TableCell>
+      <TableCell>{{ entry.absences ?? 0 }}</TableCell>
+    </TableRow>
+  </TableBody>
+</Table>
+
+
+            <Table>
+                <TableCaption>timetable data.</TableCaption>
+                <TableHeader>
+                    <TableRow>
+                        <TableHead class="w-[100px]"></TableHead>
+                        <TableHead>Väärtused</TableHead>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    <TableRow v-for="(value, key) in timetableData" :key="key">
+                        <TableCell class="font-medium">{{ key }}</TableCell>
+                        <TableCell>{{ value }}</TableCell>
+                    </TableRow>
+                </TableBody>
+            </Table>
         </div>
     </AppLayout>
 </template>

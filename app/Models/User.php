@@ -65,7 +65,7 @@ class User extends Authenticatable
     {
         $response = Http::withHeaders([
             'cookie' => $this->tahvel_cookie,
-        ])->get('https://tahvel.edu.ee/hois_back/students/132755/myAbsences/sum?absenceTypeH=true&absenceTypeP=true&absenceTypePR=true&absenceTypeV=true&lang=ET&page=0&size=50&sort=entry_date,desc&studyYear=668');
+        ])->get('https://tahvel.edu.ee/hois_back/students/132755/myAbsences/sum?absenceTypeH=true&absenceTypeP=true&absenceTypePR=true&absenceTypeV=true&lang=ET&page=0&size=50&sort=entry_date,desc&studyYear=708');
 
        if(!$response->ok() || empty($response->body())) {
             return null;
@@ -73,4 +73,32 @@ class User extends Authenticatable
 
        return $response->json();
     }
+
+    
+    public function tahvelJournal(): mixed
+    {
+        $response = Http::withHeaders([
+            'cookie' => $this->tahvel_cookie,
+        ])->get('https://tahvel.edu.ee/hois_back/journals/studentJournals?studentId=132755&studyYearId=708');
+
+       if(!$response->ok() || empty($response->body())) {
+            return null;
+       }
+
+       return $response->json();
+    }
+
+    public function tahvelTimetable(): mixed
+    {
+        $response = Http::withHeaders([
+            'cookie' => $this->tahvel_cookie,
+        ])->get('https://tahvel.edu.ee/hois_back/journals/studentJournalTasks');
+
+       if(!$response->ok() || empty($response->body())) {
+            return null;
+       }
+
+       return $response->json();
+    }
+    
 }

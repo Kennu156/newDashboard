@@ -17,6 +17,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         $userData = $user->tahvelUser();
         $absenceData = $user->tahvelAbsence();
+        $journalData = $user->tahvelJournal();
+        $timetableData = $user->tahvelTimetable();
 
         if(! $userData) {
             $user->update(['tahvel_cookie' => null]);
@@ -25,6 +27,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('Dashboard', [
             'userData' => $userData,
             'absenceData' => $absenceData,
+            'journalData' => $journalData,
+            'timetableData' => $timetableData,
         ]);
     })->name('dashboard');
 
