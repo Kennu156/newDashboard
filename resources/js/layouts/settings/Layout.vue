@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { toUrl, urlIsActive } from '@/lib/utils';
 import { appearance } from '@/routes';
+import { index as indexFile } from '@/routes/file';
 import { edit as editPassword } from '@/routes/password';
 import { edit } from '@/routes/profile';
 import { type NavItem } from '@/types';
@@ -22,6 +23,10 @@ const sidebarNavItems: NavItem[] = [
         title: 'Appearance',
         href: appearance(),
     },
+    {
+        title: 'Documents',
+        href: indexFile(),
+    }
 ];
 
 const currentPath = typeof window !== undefined ? window.location.pathname : '';
